@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "importHelpers": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "build",
+    "incremental": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@route/*": ["routes/*"],
+      "@types": ["types"],
+      "@utils": ["utils"],
+      "@class/*": ["classes/*"],
+      "@controller/*": ["controllers/*"],
+      "@service/*": ["services/*"],
+      "@dto/*": ["dto/*"],
+      "@model/*": ["database/models/*"],
+      "@database": ["database"],
+      "@middleware/*": ["middlewares/*"]
+    }
+  },
+  "include": ["./src/**/*"]
+}
