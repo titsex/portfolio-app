@@ -8,7 +8,7 @@ export const getDate = (): [Date, string] => {
     return [date, date.toLocaleString('ru-RU')]
 }
 
-export const getErrorMessage = (error: unknown) => (error instanceof Error ? capitalize(error.message) : null)
+export const getErrorMessage = (error: unknown) => (error instanceof Error ? capitalize(error.message) : undefined)
 
 export const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 

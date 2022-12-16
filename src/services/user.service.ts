@@ -4,6 +4,8 @@ import { compare, hash } from 'bcrypt'
 import { generateUniqueHex, randomNumber } from '@utils'
 import { GenerateUserDto } from '@dto/users/generate-user.dto'
 import { TokenService } from '@service/token.service'
+import { Roles } from '@types'
+import { MailService } from '@service/mail.service'
 
 export class UserService {
     public static async registration(data: AuthorizationDataDto) {
@@ -20,7 +22,9 @@ export class UserService {
         user.password = password
         user.isActivated = false
         user.activationLink = await generateUniqueHex()
+        user.role = [Roles.USER]
 
+        await MailService.sendActivationMail(user.email, user.activationLink)
         await userRepository.save(user)
 
         const userInfo = new GenerateUserDto(user)
@@ -51,6 +55,6 @@ export class UserService {
         const candidate = await tokenRepository.findOneBy({ refreshToken })
         if (!candidate) throw new Error('You were not logged in.')
 
-        return await tokenRepository.delete(candidate)
+        return await tokenRepository.delete(candidate.id)
     }
 }

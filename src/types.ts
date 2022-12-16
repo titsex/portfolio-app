@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { GenerateUserDto } from '@dto/users/generate-user.dto'
 
 export enum COLORS {
@@ -16,4 +16,20 @@ export enum COLOR_TYPES {
 
 export interface IRequest extends Request {
     user?: GenerateUserDto
+}
+
+export enum Roles {
+    USER = 'user',
+    ADMIN = 'administrator',
+    DEVELOPER = 'developer',
+}
+
+export type expressFn = (req: Request, res: Response, next: NextFunction) => unknown
+
+export interface Stack {
+    handle: expressFn
+}
+
+export interface CustomRoute {
+    stack: Stack[]
 }

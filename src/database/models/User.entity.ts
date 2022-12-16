@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { TokenEntity } from '@model/Token.entity'
+import { Roles } from '@types'
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -20,6 +21,9 @@ export class UserEntity {
 
     @Column()
     activationLink?: string
+
+    @Column('simple-array')
+    role!: Roles[]
 
     @OneToMany(() => TokenEntity, (t) => t.user)
     tokens?: TokenEntity[]

@@ -14,13 +14,13 @@ export class TokenService {
     }
 
     public static async saveToken(user: UserEntity, refreshToken: string, ip: string) {
-        const userTokens = await tokenRepository.findBy({ user })
+        const userTokens = await tokenRepository.findBy({ user: { id: user.id } })
 
         if (userTokens.length) {
             for (let i = 0; i < userTokens.length; i++) {
                 const tokenInfo = decode(userTokens[i].refreshToken) as JwtPayload
 
-                if (Date.now() < tokenInfo.exp!) await tokenRepository.delete(userTokens[i])
+                if (Date.now() < tokenInfo.exp!) await tokenRepository.delete(userTokens[i].id)
 
                 if (userTokens[i].ip === ip) {
                     userTokens[i].refreshToken = refreshToken

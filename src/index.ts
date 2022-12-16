@@ -7,13 +7,16 @@ import router from '@route/index'
 
 import { Logger } from '@class/Logger'
 import { DB } from '@database'
+import { errorMiddleware } from '@middleware/error'
+import { asyncHandlerStack } from '@class/Errors'
 
 const app = express()
 const port = 7000 || process.env.PORT
 
 app.use(express.json())
 app.use(cookieParser())
-app.use('/api', router)
+app.use('/api', asyncHandlerStack(router))
+app.use(errorMiddleware)
 
 const start = async () => {
     try {

@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { UserService } from '@service/user.service'
 import { getErrorMessage, getIp } from '@utils'
 import { IRequest } from '@types'
+import { BadRequest } from '@class/Errors'
 
 export class UserController {
     public static async registration(request: Request, response: Response) {
@@ -16,10 +17,16 @@ export class UserController {
         } catch (error) {
             const message = getErrorMessage(error)
 
-            return response.status(400).json({
-                message: 'An error occurred during user registration.',
-                error: message || 'No error details',
-            })
+            console.log(error)
+
+            throw new BadRequest(
+                'An error occurred during user registration.',
+                message
+                    ? /No recipients defined|rejected/i.test(message)
+                        ? 'Such mail does not exist or is blocked.'
+                        : message
+                    : message
+            )
         }
     }
 
@@ -33,21 +40,20 @@ export class UserController {
 
             return response.status(200).json(userData)
         } catch (error) {
-            const message = getErrorMessage(error)
-
-            return response.status(400).json({
-                message: 'An error occurred during the user login.',
-                error: message || 'No error details',
-            })
+            throw new BadRequest('An error occurred during the user login.', getErrorMessage(error))
         }
     }
 
     public static async logout(request: IRequest, response: Response) {
-        await UserService.logout(request.cookies['refreshToken'])
+        try {
+            await UserService.logout(request.cookies['refreshToken'])
 
-        request.user = undefined
-        response.clearCookie('refreshToken')
+            request.user = undefined
+            response.clearCookie('refreshToken')
 
-        return response.status(200).json({ message: 'You have successfully logged out' })
+            return response.status(200).json({ message: 'You have successfully logged out' })
+        } catch (error) {
+            throw new BadRequest('An error occurred during the user logout.', getErrorMessage(error))
+        }
     }
 }
