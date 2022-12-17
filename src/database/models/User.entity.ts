@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { TokenEntity } from '@model/Token.entity'
 import { Roles } from '@types'
 
@@ -21,6 +21,9 @@ export class UserEntity {
 
     @Column()
     activationLink?: string
+
+    @CreateDateColumn()
+    createdAt!: Date
 
     @Column('simple-array')
     role!: Roles[]

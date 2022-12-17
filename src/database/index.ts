@@ -16,10 +16,13 @@ export class DB {
             logger: 'debug',
         })
 
-        connection.initialize().then((connect) => {
-            userRepository = connect.getRepository(UserEntity)
-            tokenRepository = connect.getRepository(TokenEntity)
-        })
+        connection
+            .initialize()
+            .then((connect) => {
+                userRepository = connect.getRepository(UserEntity)
+                tokenRepository = connect.getRepository(TokenEntity)
+            })
+            .catch(() => Logger.error('An error occurred while connecting to the database.'))
 
         Logger.info('Successful connection to the database.')
     }

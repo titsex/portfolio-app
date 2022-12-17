@@ -3,9 +3,9 @@ import { createTransport, Transporter } from 'nodemailer'
 
 export class MailService {
     private static transporter: Transporter<SMTPTransport.SentMessageInfo> = createTransport({
-        host: 'smtp.yandex.ru',
+        host: process.env.EMAIL_SMTP,
         secure: true,
-        port: 465,
+        port: +process.env.EMAIL_PORT!,
         auth: {
             user: process.env.EMAIL,
             pass: process.env.EMAIL_PASSWORD,
@@ -21,7 +21,7 @@ export class MailService {
             html: `
                     <div>
                         <h1>Для активации аккаунта нажмите кнопку ниже</h1>
-                        <a href='${process.env.API_URL}/users/activate/${hex}'>Активировать</a>
+                        <a href='${process.env.API_URL}/users/activate?email=${to}&hex=${hex}'>Активировать</a>
                     </div>
                   `,
         })

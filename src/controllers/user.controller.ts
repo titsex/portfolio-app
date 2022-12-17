@@ -9,15 +9,11 @@ export class UserController {
         try {
             const { email, password } = request.body
 
-            const userData = await UserService.registration({ email, password, ip: getIp(request) })
+            const result = await UserService.registration({ email, password, ip: getIp(request) })
 
-            response.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
-
-            return response.status(200).json(userData)
+            return response.status(200).json(result)
         } catch (error) {
             const message = getErrorMessage(error)
-
-            console.log(error)
 
             throw new BadRequest(
                 'An error occurred during user registration.',
@@ -27,6 +23,24 @@ export class UserController {
                         : message
                     : message
             )
+        }
+    }
+
+    public static async activate(request: Request, response: Response) {
+        try {
+            const { email, hex } = request.query
+
+            const userData = await UserService.activate({
+                email: email as string,
+                hex: hex as string,
+                ip: getIp(request),
+            })
+
+            response.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+
+            return response.status(200).json(userData)
+        } catch (error) {
+            throw new BadRequest('An error occurred during account activation.', getErrorMessage(error))
         }
     }
 
