@@ -1,5 +1,4 @@
 import { randomBytes } from 'crypto'
-import { userRepository } from '@database'
 import { Request } from 'express'
 
 export const getDate = (): [Date, string] => {
@@ -17,14 +16,7 @@ export const randomString = (length: number) => randomBytes(length).toString('he
 export const randomNumber = (minimum: number, maximum: number) =>
     Math.floor(Math.random() * (maximum - minimum + 1) + minimum)
 
-export const generateUniqueHex = async (): Promise<string> => {
-    const hex = randomString(randomNumber(10, 20))
-
-    const candidate = await userRepository.findOneBy({ activationLink: hex })
-    if (!candidate) return hex
-
-    return await generateUniqueHex()
-}
+export const generateUniqueHex = async (): Promise<string> => randomString(randomNumber(10, 20))
 
 export const getIp = (request: Request) =>
     request.headers['x-forwarded-for']?.toString() || request.socket.remoteAddress!.toString()

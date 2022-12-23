@@ -34,7 +34,7 @@ export class UserService {
 
         await MailService.sendActivationMail(user.email, user.activationLink)
 
-        await Cache.setCache(`${user.email}`, JSON.stringify(user))
+        await Cache.setCache(user.email, JSON.stringify(user))
         return { message: 'To confirm your identity, we have sent you an email link to activate your account.' }
     }
 
@@ -51,6 +51,7 @@ export class UserService {
         if (user.activationLink !== data.hex) throw new Error('Invalid activation link.')
 
         user.isActivated = true
+        user.activationLink = ''
         await userRepository.save(user)
 
         const userInfo = new GenerateUserDto(user)

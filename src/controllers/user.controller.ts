@@ -13,16 +13,7 @@ export class UserController {
 
             return response.status(200).json(result)
         } catch (error) {
-            const message = getErrorMessage(error)
-
-            throw new BadRequest(
-                'An error occurred during user registration.',
-                message
-                    ? /No recipients defined|rejected/i.test(message)
-                        ? 'Such mail does not exist or is blocked.'
-                        : message
-                    : message
-            )
+            throw new BadRequest('An error occurred during the user login.', getErrorMessage(error))
         }
     }
 

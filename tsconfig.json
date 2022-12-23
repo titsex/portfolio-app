@@ -25,7 +25,7 @@
       "@dto/*": ["dto/*"],
       "@model/*": ["database/models/*"],
       "@database": ["database"],
-      "@middleware/*": ["middlewares/*"]
+      "@middleware/*": ["middlewares/*"],
     }
   },
   "include": ["./src/**/*"]

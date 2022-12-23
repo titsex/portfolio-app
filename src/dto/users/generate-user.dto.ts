@@ -3,14 +3,14 @@ import { Roles } from '@types'
 
 export class GenerateUserDto {
     email: string
-    id: number
+    uid: string
     isActivated: boolean | undefined
     role: Roles[]
     createdAt: Date
 
     constructor(user: UserEntity) {
         this.email = user.email
-        this.id = user.id
+        this.uid = user.uid
         this.isActivated = user.isActivated
         this.role = user.role
         this.createdAt = user.createdAt

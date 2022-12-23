@@ -5,7 +5,7 @@ export class HttpError {
     constructor(
         public readonly statusCode: number,
         public readonly message: string,
-        public readonly error = 'No error details'
+        public readonly error: string = 'No error details'
     ) {}
 }
 

@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } f
 import { TokenEntity } from '@model/Token.entity'
 import { Roles } from '@types'
 
-@Entity({ name: 'users' })
+@Entity('users')
 export class UserEntity {
     @PrimaryGeneratedColumn()
     id!: number
