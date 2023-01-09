@@ -26,7 +26,7 @@ export class UserEntity {
     createdAt!: Date
 
     @Column('simple-array')
-    role!: Roles[]
+    roles!: Roles[]
 
     @OneToMany(() => TokenEntity, (t) => t.user)
     tokens?: TokenEntity[]

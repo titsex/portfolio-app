@@ -1,22 +1,19 @@
-import { Response, NextFunction } from 'express'
+import { NextFunction, Response } from 'express'
 import { IRequest } from '@types'
-import { decode } from 'jsonwebtoken'
-import { GenerateUserDto } from '@dto/users/generate-user.dto'
-import { tokenRepository } from '@database'
 import { Unauthorized } from '@class/Errors'
+import { GenerateDto } from '@dto/users'
+import { TokenService } from '@service/token.service'
 
 export async function checkAuth(request: IRequest, response: Response, next: NextFunction) {
-    const refreshToken = request.cookies['refreshToken']
-    if (!refreshToken) throw new Unauthorized()
+    const authorization = request.headers.authorization
+    if (!authorization) throw new Unauthorized()
 
-    const candidate = await tokenRepository.findOneBy({ refreshToken })
-    if (!candidate) throw new Unauthorized()
+    const accessToken = authorization.split(' ')[1]
+    if (!accessToken) throw new Unauthorized()
 
-    if (typeof refreshToken !== 'string') throw new Unauthorized()
+    const userData = TokenService.validateAccessToken(accessToken)
+    if (!userData) throw new Unauthorized()
 
-    const tokenInfo = decode(refreshToken)
-    if (!tokenInfo || typeof tokenInfo !== 'object') throw new Unauthorized()
-
-    request.user = tokenInfo as GenerateUserDto
+    request.user = userData as GenerateDto
     next()
 }

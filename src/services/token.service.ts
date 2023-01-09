@@ -1,16 +1,32 @@
 import { tokenRepository } from '@database'
-import { decode, JwtPayload, sign } from 'jsonwebtoken'
+import { decode, JwtPayload, sign, verify } from 'jsonwebtoken'
 import { UserEntity } from '@model/User.entity'
-import { GenerateUserDto } from '@dto/users/generate-user.dto'
+import { GenerateDto } from '@dto/users'
 
 export class TokenService {
-    public static generateTokens(payload: GenerateUserDto) {
+    public static generateTokens(payload: GenerateDto) {
         payload = { ...payload }
 
         const accessToken = sign(payload, process.env.JWT_ACCESS_KEY!, { expiresIn: '30m' })
         const refreshToken = sign(payload, process.env.JWT_REFRESH_KEY!, { expiresIn: '30d' })
 
         return { accessToken, refreshToken }
+    }
+
+    public static validateRefreshToken(token: string) {
+        try {
+            return verify(token, process.env.JWT_REFRESH_KEY!)
+        } catch (error) {
+            return null
+        }
+    }
+
+    public static validateAccessToken(token: string) {
+        try {
+            return verify(token, process.env.JWT_ACCESS_KEY!)
+        } catch (error) {
+            return null
+        }
     }
 
     public static async saveToken(user: UserEntity, refreshToken: string, ip: string) {

@@ -61,4 +61,18 @@ export class UserController {
             throw new BadRequest('An error occurred during the user logout.', getErrorMessage(error))
         }
     }
+
+    public static async refresh(request: IRequest, response: Response) {
+        try {
+            const { refreshToken } = request.cookies
+
+            const userData = await UserService.refresh({ refreshToken, ip: getIp(request) })
+
+            response.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+
+            return response.status(200).json(userData)
+        } catch (error) {
+            throw new BadRequest('An error occurred during the user refresh.', getErrorMessage(error))
+        }
+    }
 }

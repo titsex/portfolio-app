@@ -12,15 +12,30 @@ export class MailService {
         },
     })
 
+    public static async sendConfirmationOfferMail(to: string, hex: string) {
+        await this.transporter.sendMail({
+            from: process.env.EMAIL,
+            to,
+            subject: `Подтвердить отправку предложения`,
+            text: '',
+            html: `
+                    <div>
+                        <h1>Для подтверждения отправки предложения, нажмите кнопку ниже</h1>
+                        <a href='${process.env.API_URL}/offers/confirm?email=${to}&hex=${hex}'>Отправить</a>
+                    </div>
+                  `,
+        })
+    }
+
     public static async sendActivationMail(to: string, hex: string) {
         await this.transporter.sendMail({
             from: process.env.EMAIL,
             to,
-            subject: `Активация аккаунта на ${process.env.CLIENT_URL}`,
+            subject: `Активация аккаунта`,
             text: '',
             html: `
                     <div>
-                        <h1>Для активации аккаунта нажмите кнопку ниже</h1>
+                        <h1>Для активации аккаунта, нажмите кнопку ниже</h1>
                         <a href='${process.env.API_URL}/users/activate?email=${to}&hex=${hex}'>Активировать</a>
                     </div>
                   `,

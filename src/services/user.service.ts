@@ -1,21 +1,19 @@
-import { AuthorizationDataDto } from '@dto/users/authorization-data.dto'
+import { AuthorizationDto, GenerateDto, ActivateDto, RefreshDto } from '@dto/users'
 import { tokenRepository, userRepository } from '@database'
 import { compare, hash } from 'bcrypt'
 import { generateUniqueHex, randomNumber } from '@utils'
-import { GenerateUserDto } from '@dto/users/generate-user.dto'
 import { TokenService } from '@service/token.service'
 import { Roles } from '@types'
 import { Cache } from '@class/Cache'
 import { UserEntity } from '@model/User.entity'
-import { ActivateDataDto } from '@dto/users/activate-data.dto'
 import { MailService } from '@service/mail.service'
 
 export class UserService {
-    public static async registration(data: AuthorizationDataDto) {
+    public static async registration(data: AuthorizationDto) {
         if (!data.email) throw new Error('Email is not specified.')
         if (!data.password) throw new Error('Password is not specified.')
 
-        const cachedData = await Cache.getCache(data.email)
+        const cachedData = await Cache.getCache(data.email, 'Registration')
 
         if (cachedData)
             throw new Error('This mail is already at the last stage of registration, awaiting confirmation.')
@@ -30,22 +28,22 @@ export class UserService {
         user.password = password
         user.isActivated = false
         user.activationLink = await generateUniqueHex()
-        user.role = [Roles.USER]
+        user.roles = [Roles.USER]
 
         await MailService.sendActivationMail(user.email, user.activationLink)
 
-        await Cache.setCache(user.email, JSON.stringify(user))
+        await Cache.setCache(user.email, JSON.stringify(user), 'Registration')
         return { message: 'To confirm your identity, we have sent you an email link to activate your account.' }
     }
 
-    public static async activate(data: ActivateDataDto) {
+    public static async activate(data: ActivateDto) {
         if (!data.email) throw new Error('Email is not specified.')
         if (!data.hex) throw new Error('Activation link is not specified.')
 
-        const cachedData = await Cache.getCache(data.email)
+        const cachedData = await Cache.getCache(data.email, 'Registration')
         if (!cachedData) throw new Error('The email is incorrect or the time has expired.')
 
-        await Cache.deleteCache(data.email)
+        await Cache.deleteCache(data.email, 'Registration')
 
         const user: UserEntity = JSON.parse(cachedData)
         if (user.activationLink !== data.hex) throw new Error('Invalid activation link.')
@@ -54,14 +52,14 @@ export class UserService {
         user.activationLink = ''
         await userRepository.save(user)
 
-        const userInfo = new GenerateUserDto(user)
+        const userInfo = new GenerateDto(user)
         const tokens = TokenService.generateTokens(userInfo)
 
         await TokenService.saveToken(user, tokens.refreshToken, data.ip)
         return { ...tokens, user: userInfo }
     }
 
-    public static async login(data: AuthorizationDataDto) {
+    public static async login(data: AuthorizationDto) {
         if (!data.email) throw new Error('Email is not specified.')
         if (!data.password) throw new Error('Password is not specified.')
 
@@ -71,7 +69,7 @@ export class UserService {
         const isPassEquals = await compare(data.password, user.password)
         if (!isPassEquals) throw new Error('Invalid password.')
 
-        const userInfo = new GenerateUserDto(user)
+        const userInfo = new GenerateDto(user)
         const tokens = TokenService.generateTokens(userInfo)
 
         await TokenService.saveToken(user, tokens.refreshToken, data.ip)
@@ -83,5 +81,23 @@ export class UserService {
         if (!candidate) throw new Error('You were not logged in.')
 
         return await tokenRepository.delete(candidate.id)
+    }
+
+    public static async refresh(data: RefreshDto) {
+        if (!data.refreshToken) throw new Error('You were not logged in.')
+
+        const userData = TokenService.validateRefreshToken(data.refreshToken) as GenerateDto
+        const tokenFromDb = await tokenRepository.findOneBy({ refreshToken: data.refreshToken })
+
+        if (!userData || !tokenFromDb) throw new Error('You were not logged in.')
+
+        const user = await userRepository.findOneBy({ uid: userData.uid })
+        if (!user) throw new Error('The user is not in the database.')
+
+        const userInfo = new GenerateDto(user)
+        const tokens = TokenService.generateTokens(userInfo)
+
+        await TokenService.saveToken(user, tokens.refreshToken, data.ip)
+        return { ...tokens, user: userInfo }
     }
 }

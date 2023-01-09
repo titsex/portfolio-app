@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { rateLimiterMiddleware } from '@middleware/limiter'
+import { rateLimiterMiddleware } from '@middleware/index'
 
 import userRouter from '@route/users'
 import offerRouter from '@route/offers'
