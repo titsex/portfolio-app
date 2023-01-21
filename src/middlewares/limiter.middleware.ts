@@ -8,7 +8,7 @@ const options: IRateLimiterOptions = {
 
 const rateLimiter = new RateLimiterMemory(options)
 
-export const rateLimiterMiddleware = (request: Request, response: Response, next: NextFunction) => {
+export function rateLimiterMiddleware(request: Request, response: Response, next: NextFunction) {
     rateLimiter
         .consume(request.ip)
         .then((rateLimiterRes) => {

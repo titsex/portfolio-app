@@ -4,7 +4,7 @@ import { Unauthorized } from '@class/Errors'
 import { CreateDto } from '@dto/users'
 import { TokenService } from '@service/token.service'
 
-export async function checkAuth(request: IRequest, response: Response, next: NextFunction) {
+export function checkAuth(request: IRequest, response: Response, next: NextFunction) {
     const authorization = request.headers.authorization
     if (!authorization) throw new Unauthorized()
 

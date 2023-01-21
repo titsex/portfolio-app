@@ -9,7 +9,7 @@ import router from '@route/index'
 import { Logger } from '@class/Logger'
 import { DB } from '@database'
 import { errorMiddleware } from '@middleware/index'
-import { asyncHandlerStack } from '@class/Errors'
+import { asyncHandlerStack } from '@utils'
 import { Cache } from '@class/Cache'
 
 const app = express()

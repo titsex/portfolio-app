@@ -34,6 +34,7 @@ export type expressFn = (req: Request, res: Response, next: NextFunction) => unk
 
 export interface Stack {
     handle: expressFn
+    name?: string
 }
 
 export type OfferStatuses = 'rejected' | 'interested' | 'reviewed' | 'accepted' | 'pending'
