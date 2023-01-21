@@ -1,4 +1,4 @@
-import { AuthorizationDto, GenerateDto, ActivateDto, RefreshDto } from '@dto/users'
+import { AuthorizationDto, CreateDto, ActivateDto, RefreshDto } from '@dto/users'
 import { tokenRepository, userRepository } from '@database'
 import { compare, hash } from 'bcrypt'
 import { generateUniqueHex, randomNumber } from '@utils'
@@ -10,9 +10,6 @@ import { MailService } from '@service/mail.service'
 
 export class UserService {
     public static async registration(data: AuthorizationDto) {
-        if (!data.email) throw new Error('Email is not specified.')
-        if (!data.password) throw new Error('Password is not specified.')
-
         const cachedData = await Cache.getCache(data.email, 'Registration')
 
         if (cachedData)
@@ -37,9 +34,6 @@ export class UserService {
     }
 
     public static async activate(data: ActivateDto) {
-        if (!data.email) throw new Error('Email is not specified.')
-        if (!data.hex) throw new Error('Activation link is not specified.')
-
         const cachedData = await Cache.getCache(data.email, 'Registration')
         if (!cachedData) throw new Error('The email is incorrect or the time has expired.')
 
@@ -52,7 +46,7 @@ export class UserService {
         user.activationLink = ''
         await userRepository.save(user)
 
-        const userInfo = new GenerateDto(user)
+        const userInfo = new CreateDto(user)
         const tokens = TokenService.generateTokens(userInfo)
 
         await TokenService.saveToken(user, tokens.refreshToken, data.ip)
@@ -60,16 +54,13 @@ export class UserService {
     }
 
     public static async login(data: AuthorizationDto) {
-        if (!data.email) throw new Error('Email is not specified.')
-        if (!data.password) throw new Error('Password is not specified.')
-
         const user = await userRepository.findOneBy({ email: data.email })
         if (!user) throw new Error('The user with this email is not registered.')
 
         const isPassEquals = await compare(data.password, user.password)
         if (!isPassEquals) throw new Error('Invalid password.')
 
-        const userInfo = new GenerateDto(user)
+        const userInfo = new CreateDto(user)
         const tokens = TokenService.generateTokens(userInfo)
 
         await TokenService.saveToken(user, tokens.refreshToken, data.ip)
@@ -86,7 +77,7 @@ export class UserService {
     public static async refresh(data: RefreshDto) {
         if (!data.refreshToken) throw new Error('You were not logged in.')
 
-        const userData = TokenService.validateRefreshToken(data.refreshToken) as GenerateDto
+        const userData = TokenService.validateRefreshToken(data.refreshToken) as CreateDto
         const tokenFromDb = await tokenRepository.findOneBy({ refreshToken: data.refreshToken })
 
         if (!userData || !tokenFromDb) throw new Error('You were not logged in.')
@@ -94,7 +85,7 @@ export class UserService {
         const user = await userRepository.findOneBy({ uid: userData.uid })
         if (!user) throw new Error('The user is not in the database.')
 
-        const userInfo = new GenerateDto(user)
+        const userInfo = new CreateDto(user)
         const tokens = TokenService.generateTokens(userInfo)
 
         await TokenService.saveToken(user, tokens.refreshToken, data.ip)

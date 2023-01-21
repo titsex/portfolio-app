@@ -1,5 +1,7 @@
 import { randomBytes } from 'crypto'
 import { Request } from 'express'
+import { Result, ValidationError } from 'express-validator'
+import { IValidationErrors } from '@types'
 
 export const getDate = (): [Date, string] => {
     const date = new Date()
@@ -20,3 +22,13 @@ export const generateUniqueHex = async (): Promise<string> => randomString(rando
 
 export const getIp = (request: Request) =>
     request.headers['x-forwarded-for']?.toString() || request.socket.remoteAddress!.toString()
+
+export const validationHandling = (errors: Result<ValidationError>) => {
+    const result: IValidationErrors[] = []
+
+    for (const error of errors.array()) {
+        if (!result.find((x) => x.param === error.param)) result.push({ param: error.param, message: error.msg })
+    }
+
+    return result.length === 1 ? result[0] : result
+}

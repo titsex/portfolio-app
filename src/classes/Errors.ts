@@ -1,16 +1,16 @@
-import { CustomRoute, expressFn } from '@types'
+import { BadRequestErrorType, CustomRoute, expressFn } from '@types'
 import { Router } from 'express'
 
 export class HttpError {
     constructor(
         public readonly statusCode: number,
         public readonly message: string,
-        public readonly error: string = 'No error details'
+        public readonly error: BadRequestErrorType = 'No error details'
     ) {}
 }
 
 export class BadRequest extends HttpError {
-    constructor(message: string, error?: string) {
+    constructor(message: string, error?: BadRequestErrorType) {
         super(400, message, error)
     }
 }

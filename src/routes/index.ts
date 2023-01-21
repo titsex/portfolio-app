@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { rateLimiterMiddleware } from '@middleware/index'
 
-import userRouter from '@route/users'
-import offerRouter from '@route/offers'
+import userRouter from '@route/user.route'
+import offerRouter from '@route/offer.route'
 
 const router = Router()
 

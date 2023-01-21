@@ -1,7 +1,7 @@
 import { UserEntity } from '@model/User.entity'
 import { Roles } from '@types'
 
-export class GenerateDto {
+export class CreateDto {
     email: string
     uid: string
     isActivated: boolean | undefined

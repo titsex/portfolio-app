@@ -1,6 +1,6 @@
 import { OfferStatuses } from '@types'
 
-export class ChangeStatusDataDto {
+export class ChangeStatusDto {
     public status!: OfferStatuses
     public id!: number
 }

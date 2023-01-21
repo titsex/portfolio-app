@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express'
 import { IRequest } from '@types'
 import { Unauthorized } from '@class/Errors'
-import { GenerateDto } from '@dto/users'
+import { CreateDto } from '@dto/users'
 import { TokenService } from '@service/token.service'
 
 export async function checkAuth(request: IRequest, response: Response, next: NextFunction) {
@@ -14,6 +14,6 @@ export async function checkAuth(request: IRequest, response: Response, next: Nex
     const userData = TokenService.validateAccessToken(accessToken)
     if (!userData) throw new Unauthorized()
 
-    request.user = userData as GenerateDto
+    request.user = userData as CreateDto
     next()
 }

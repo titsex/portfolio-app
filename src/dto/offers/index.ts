@@ -1,3 +1,3 @@
-export { ConfirmDataDto } from '@dto/offers/confirm-data.dto'
-export { SendDataDto } from '@dto/offers/send-data.dto'
-export { ChangeStatusDataDto } from '@dto/offers/change-status-data.dto'
+export { ConfirmDto } from '@dto/offers/confirm.dto'
+export { SendDto } from '@dto/offers/send.dto'
+export { ChangeStatusDto } from '@dto/offers/change-status.dto'

@@ -2,7 +2,7 @@ import { getDate } from '@utils'
 import { COLOR_TYPES, COLORS } from '@types'
 
 export class Logger {
-    public static info(...data: any[]) {
+    public static info(...data: unknown[]) {
         const [, date] = getDate()
 
         console.log(
@@ -13,7 +13,7 @@ export class Logger {
         )
     }
 
-    public static error(...data: any[]): void {
+    public static error(...data: unknown[]): void {
         const [, date] = getDate()
 
         console.log(

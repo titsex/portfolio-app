@@ -1,10 +1,10 @@
 import { tokenRepository } from '@database'
 import { decode, JwtPayload, sign, verify } from 'jsonwebtoken'
 import { UserEntity } from '@model/User.entity'
-import { GenerateDto } from '@dto/users'
+import { CreateDto } from '@dto/users'
 
 export class TokenService {
-    public static generateTokens(payload: GenerateDto) {
+    public static generateTokens(payload: CreateDto) {
         payload = { ...payload }
 
         const accessToken = sign(payload, process.env.JWT_ACCESS_KEY!, { expiresIn: '30m' })

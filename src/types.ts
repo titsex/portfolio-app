@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { GenerateDto } from '@dto/users'
+import { CreateDto } from '@dto/users'
 
 export enum COLORS {
     NONE = '\x1b[0',
@@ -13,8 +13,15 @@ export enum COLOR_TYPES {
     BOLD = ';1m',
 }
 
+export interface IValidationErrors {
+    param: string
+    message: string
+}
+
+export type BadRequestErrorType = string | IValidationErrors | IValidationErrors[]
+
 export interface IRequest extends Request {
-    user?: GenerateDto
+    user?: CreateDto
     errors?: string[]
 }
 
