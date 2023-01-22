@@ -53,6 +53,9 @@ const changeRouteHandle = (route: CustomRoute) => {
 const addValidationMiddlewareToStack = (stack: CustomRoute) => {
     const stacks = [...stack.stack]
 
+    if (stacks.length <= 1) return stacks
+    if (!stacks.find((x) => x.name === 'middleware')) return stacks
+
     const controller = stacks.pop()
     const middleware = Object.assign(Object.create(Object.getPrototypeOf(controller)), controller)
 

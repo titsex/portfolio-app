@@ -20,5 +20,5 @@ export class OfferValidation {
         ).isIn(['rejected', 'interested', 'reviewed', 'accepted']),
     ]
 
-    public static getOne = param('id', 'The id must be a number').isNumeric()
+    public static getOneById = param('id', 'The id must be a number').isNumeric()
 }
