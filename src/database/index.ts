@@ -6,7 +6,7 @@ import { OfferEntity } from '@model/Offer.entity'
 
 export let userRepository!: Repository<UserEntity>
 export let tokenRepository!: Repository<TokenEntity>
-export let offersRepository!: Repository<OfferEntity>
+export let offerRepository!: Repository<OfferEntity>
 
 export class DB {
     constructor(url: string) {
@@ -23,7 +23,7 @@ export class DB {
             .then((connect) => {
                 userRepository = connect.getRepository(UserEntity)
                 tokenRepository = connect.getRepository(TokenEntity)
-                offersRepository = connect.getRepository(OfferEntity)
+                offerRepository = connect.getRepository(OfferEntity)
             })
             .catch(() => Logger.error('An error occurred while connecting to the database.'))
 
