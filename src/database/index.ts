@@ -3,10 +3,12 @@ import { DataSource, Repository } from 'typeorm'
 import { UserEntity } from '@model/User.entity'
 import { TokenEntity } from '@model/Token.entity'
 import { OfferEntity } from '@model/Offer.entity'
+import { SocialEntity } from '@model/Social.entity'
 
 export let userRepository!: Repository<UserEntity>
 export let tokenRepository!: Repository<TokenEntity>
 export let offerRepository!: Repository<OfferEntity>
+export let socialRepository!: Repository<SocialEntity>
 
 export class DB {
     constructor(url: string) {
@@ -24,6 +26,7 @@ export class DB {
                 userRepository = connect.getRepository(UserEntity)
                 tokenRepository = connect.getRepository(TokenEntity)
                 offerRepository = connect.getRepository(OfferEntity)
+                socialRepository = connect.getRepository(SocialEntity)
             })
             .catch(() => Logger.error('An error occurred while connecting to the database.'))
 

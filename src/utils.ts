@@ -4,6 +4,8 @@ import { Result, ValidationError } from 'express-validator'
 import { CustomRoute, expressFn, IValidationErrors } from '@types'
 import { validationMiddleware } from '@middleware/validation.middleware'
 
+import htmlTags from 'html-tags'
+
 export const getDate = (): [Date, string] => {
     const date = new Date()
 
@@ -85,4 +87,11 @@ export const asyncHandlerStack = (router: Router) => {
     })
 
     return router
+}
+
+export const isHtml = (value: string) => {
+    const basic = /\s?<!doctype html>|(<html\b[^>]*>|<body\b[^>]*>|<x-[^>]+>)+/i
+    const full = new RegExp(htmlTags.map((tag) => `<${tag}\\b[^>]*>`).join('|'), 'i')
+
+    return basic.test(value) || full.test(value)
 }
